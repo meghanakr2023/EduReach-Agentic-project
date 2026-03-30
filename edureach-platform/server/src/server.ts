@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import app from "./app.ts";
-import connectDB from "./config/database.config.ts";
-import { initializeKnowledgeBase } from "./services/rag.service.ts";
-import KnowledgeDoc from "./models/knowledge-doc.model.ts";
+import app from "./app.js";
+import connectDB from "./config/database.config.js";
+import { initializeKnowledgeBase } from "./services/rag.service.js";
+import KnowledgeDoc from "./models/knowledge-doc.model.js";
 
 const PORT = process.env.PORT || 5000;
 
