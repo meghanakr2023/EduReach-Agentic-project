@@ -26,7 +26,7 @@ const start = async (): Promise<void> => {
 
     app.listen(PORT, () => {
       console.log(" EduReach Server is running!");
-      console.log(" URL: http://localhost:" + PORT);
+      console.log(` Server running on port ${PORT}`);
       console.log(" Node: " + process.version);
       console.log(" Press Ctrl+C to stop");
     });
