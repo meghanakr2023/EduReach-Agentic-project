@@ -1,0 +1,70 @@
+import type { Request, Response, NextFunction } from "express";
+import User from "../models/user.model.ts";
+import Call from "../models/call.model.ts";
+import { initiateOutboundCall } from "../services/vapi.service.ts";
+
+// POST /api/vapi/call
+export const startCall = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const {
+      phoneNumber,
+      preferredCourse,
+      preferredTopic,
+      kcetRank,
+      twelfthPercent,
+      studentEmail,
+    } = req.body;
+
+    if (!phoneNumber || phoneNumber.trim().length < 10) {
+      res.status(400).json({ success: false, message: "Valid phone number is required." });
+      return;
+    }
+
+    const currentUser = (req as any).user;
+    const user = await User.findById(currentUser.userId).select("name email");
+
+    if (!user) {
+      res.status(404).json({ success: false, message: "User not found." });
+      return;
+    }
+
+    // Use email from form if provided, otherwise use account email
+    const emailToUse = studentEmail || user.email;
+
+    // Initiate the Vapi call with all collected data
+    const result = await initiateOutboundCall({
+      phoneNumber: phoneNumber.trim(),
+      userName: user.name,
+      userEmail: emailToUse,
+      preferredCourse: preferredCourse || "Not specified",
+      preferredTopic: preferredTopic || "General inquiry",
+      kcetRank: kcetRank || null,
+      twelfthPercent: twelfthPercent || null,
+    });
+
+    // Save call record to MongoDB
+    await Call.create({
+      callId: result.id,
+      userId: user._id,
+      userName: user.name,
+      userEmail: emailToUse,
+      phoneNumber: phoneNumber.trim(),
+      preferredCourse: preferredCourse || "Not specified",
+      status: result.status || "initiated",
+    });
+
+    console.log(`📞 Call initiated for: ${user.name} | Course: ${preferredCourse} | KCET: ${kcetRank || "not provided"}`);
+
+    res.status(200).json({
+      success: true,
+      message: "Call initiated. You will receive a call shortly.",
+      data: { callId: result.id, status: result.status },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
