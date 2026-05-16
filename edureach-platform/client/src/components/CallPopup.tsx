@@ -17,20 +17,8 @@ export default function CallPopup({ open, onClose }: CallPopupProps) {
   const [phone, setPhone] = useState("");
   const [course, setCourse] = useState("");
   const [topic, setTopic] = useState("");
-  const [kcetRank, setKcetRank] = useState("");
-  const [twelfthPercent, setTwelfthPercent] = useState("");
   const [email, setEmail] = useState(user?.email || "");
   const [status, setStatus] = useState<CallStatus>("form");
-
-  const getBranchRecommendation = (rank: number) => {
-    if (rank <= 6000) return "AI & Data Science (Avg: Rs.11.5 LPA) ⭐";
-    if (rank <= 8000) return "Computer Science - CSE (Avg: Rs.10.2 LPA) ✅";
-    if (rank <= 10000) return "Information Technology - IT (Avg: Rs.8.8 LPA) ✅";
-    if (rank <= 15000) return "Electronics & Communication - ECE (Avg: Rs.7.2 LPA) ✅";
-    if (rank <= 25000) return "Mechanical Engineering - ME (Avg: Rs.5.5 LPA) ✅";
-    if (rank <= 35000) return "Civil Engineering - CE (Avg: Rs.5.0 LPA) ✅";
-    return "Management Quota available for all branches 📋";
-  };
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -48,8 +36,6 @@ export default function CallPopup({ open, onClose }: CallPopupProps) {
         phone,
         course,
         topic,
-        kcetRank: kcetRank || undefined,
-        twelfthPercent: twelfthPercent || undefined,
         email,
       });
       setStatus("done");
@@ -65,8 +51,6 @@ export default function CallPopup({ open, onClose }: CallPopupProps) {
     setPhone("");
     setCourse("");
     setTopic("");
-    setKcetRank("");
-    setTwelfthPercent("");
     setEmail(user?.email || "");
   };
 
@@ -150,43 +134,6 @@ export default function CallPopup({ open, onClose }: CallPopupProps) {
                 </select>
               </div>
 
-              {/* KCET + 12th */}
-              <div className="border-t border-gray-100 pt-3">
-                <p className="text-xs font-medium text-gray-500 mb-3">
-                  📊 Academic Details <span className="font-normal">(optional — helps Ava give instant recommendation)</span>
-                </p>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">KCET / PGCET Rank</label>
-                    <input type="number" value={kcetRank}
-                      onChange={(e) => setKcetRank(e.target.value)}
-                      placeholder="e.g. 5000"
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:border-maroon focus:ring-1 focus:ring-maroon text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">12th / PU Marks %</label>
-                    <input type="number" value={twelfthPercent}
-                      onChange={(e) => setTwelfthPercent(e.target.value)}
-                      placeholder="e.g. 85"
-                      min="0" max="100"
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:border-maroon focus:ring-1 focus:ring-maroon text-sm" />
-                  </div>
-                </div>
-
-                {/* Live recommendation preview */}
-                {kcetRank && parseInt(kcetRank) > 0 && (
-                  <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <p className="text-xs font-semibold text-green-800 mb-1">🎯 Instant Recommendation:</p>
-                    <p className="text-xs text-green-700">
-                      {getBranchRecommendation(parseInt(kcetRank))}
-                    </p>
-                    <p className="text-xs text-green-600 mt-1">
-                      Ava will discuss this in detail during the call!
-                    </p>
-                  </div>
-                )}
-              </div>
-
               <button type="submit"
                 className="w-full bg-maroon text-white py-3 rounded-lg font-semibold hover:bg-maroon-dark transition-colors duration-200 flex items-center justify-center gap-2">
                 <Phone className="w-4 h-4" />
@@ -194,7 +141,7 @@ export default function CallPopup({ open, onClose }: CallPopupProps) {
               </button>
 
               <p className="text-xs text-center text-gray-400">
-                After the call, a personalized email with branch recommendation & fee details will be sent to {email || "your email"}
+                After the call, a personalized email with course details will be sent to {email || "your email"}
               </p>
             </form>
           )}
@@ -204,13 +151,6 @@ export default function CallPopup({ open, onClose }: CallPopupProps) {
               <Loader2 className="w-10 h-10 text-maroon mx-auto animate-spin mb-3" />
               <h3 className="font-heading text-lg font-bold text-gray-900 mb-1">Calling you now...</h3>
               <p className="text-gray-500 text-sm">Our AI counselor Ava is dialing {phone}</p>
-              {kcetRank && (
-                <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg text-left">
-                  <p className="text-xs text-green-700 font-medium">
-                    ✅ Ava already knows your KCET rank ({kcetRank}) and 12th percentage ({twelfthPercent}%). She won't ask you again!
-                  </p>
-                </div>
-              )}
             </div>
           )}
 
@@ -220,7 +160,7 @@ export default function CallPopup({ open, onClose }: CallPopupProps) {
               <h3 className="font-heading text-lg font-bold text-gray-900 mb-1">Call Initiated!</h3>
               <p className="text-gray-500 text-sm mb-2">You'll receive a call shortly on {phone}.</p>
               <p className="text-xs text-gray-400 mb-4">
-                After the call, a personalized email with branch recommendation and fee details will be sent to <span className="font-medium text-maroon">{email}</span>
+                After the call, a personalized email with course details will be sent to <span className="font-medium text-maroon">{email}</span>
               </p>
               <button onClick={reset} className="text-maroon font-medium text-sm hover:underline">
                 Request Another Call
