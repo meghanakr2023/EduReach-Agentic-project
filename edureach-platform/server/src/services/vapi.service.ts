@@ -4,7 +4,6 @@ interface CallPayload {
   userEmail: string;
   preferredCourse?: string;
   preferredTopic?: string;
-
 }
 
 interface VapiCallResponse {
@@ -20,8 +19,6 @@ export const initiateOutboundCall = async (payload: CallPayload): Promise<VapiCa
     userEmail,
     preferredCourse,
     preferredTopic,
-    kcetRank,
-    twelfthPercent,
   } = payload;
 
   const VAPI_API_KEY = process.env.VAPI_API_KEY;
@@ -36,21 +33,13 @@ export const initiateOutboundCall = async (payload: CallPayload): Promise<VapiCa
     ? phoneNumber
     : `+91${phoneNumber.replace(/^0+/, "")}`;
 
-  // Build a smart first message using all collected data
-  let firstMessage = `Hi ${userName}! This is Ava, your AI admissions counselor from Mysore College. `;
+  const firstMessage = `Hi ${userName}! This is Ava, your AI admissions counselor from Mysore College. You are interested in ${preferredCourse || "our programs"} and want to know about ${preferredTopic || "admissions"}. How can I help you today?`;
 
-  // Replace the entire firstMessage logic with just this:
-let firstMessage = `Hi ${userName}! This is Ava, your AI admissions counselor from Mysore College. `;
-firstMessage += `You're interested in ${preferredCourse || "our programs"} and want to know about ${preferredTopic || "admissions"}. `;
-firstMessage += `How can I help you today?`;
-
-  // Build variable values to pass all context to the assistant
   const variableValues: Record<string, string> = {
     studentName: userName,
     studentEmail: userEmail,
     preferredCourse: preferredCourse || "Not specified",
     preferredTopic: preferredTopic || "General inquiry",
-   
   };
 
   const response = await fetch("https://api.vapi.ai/call", {
