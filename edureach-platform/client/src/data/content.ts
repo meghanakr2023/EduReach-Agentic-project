@@ -13,6 +13,7 @@ export const vapiFormContent = {
     "MBA Marketing",
     "MBA HR",
     "MBA IT",
+    "General Inquiry",  // add this
   ],
   topics: [
     "Course Details",
