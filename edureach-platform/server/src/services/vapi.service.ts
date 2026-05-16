@@ -4,8 +4,7 @@ interface CallPayload {
   userEmail: string;
   preferredCourse?: string;
   preferredTopic?: string;
-  kcetRank?: string | null;
-  twelfthPercent?: string | null;
+
 }
 
 interface VapiCallResponse {
