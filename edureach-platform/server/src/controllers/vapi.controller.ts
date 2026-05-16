@@ -14,8 +14,7 @@ export const startCall = async (
       phoneNumber,
       preferredCourse,
       preferredTopic,
-      kcetRank,
-      
+      studentEmail,
     } = req.body;
 
     if (!phoneNumber || phoneNumber.trim().length < 10) {
@@ -31,19 +30,16 @@ export const startCall = async (
       return;
     }
 
-    // Use email from form if provided, otherwise use account email
     const emailToUse = studentEmail || user.email;
 
-    // Initiate the Vapi call with all collected data
-   const result = await initiateOutboundCall({
-  phoneNumber: phoneNumber.trim(),
-  userName: user.name,
-  userEmail: emailToUse,
-  preferredCourse: preferredCourse || "Not specified",
-  preferredTopic: preferredTopic || "General inquiry",
-});
+    const result = await initiateOutboundCall({
+      phoneNumber: phoneNumber.trim(),
+      userName: user.name,
+      userEmail: emailToUse,
+      preferredCourse: preferredCourse || "Not specified",
+      preferredTopic: preferredTopic || "General inquiry",
+    });
 
-    // Save call record to MongoDB
     await Call.create({
       callId: result.id,
       userId: user._id,
@@ -54,7 +50,7 @@ export const startCall = async (
       status: result.status || "initiated",
     });
 
-    console.log(`📞 Call initiated for: ${user.name} | Course: ${preferredCourse} | KCET: ${kcetRank || "not provided"}`);
+    console.log(`📞 Call initiated for: ${user.name} | Course: ${preferredCourse}`);
 
     res.status(200).json({
       success: true,
