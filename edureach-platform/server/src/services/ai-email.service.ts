@@ -73,10 +73,6 @@ export const generateGeneralEmailContent = async ({
   studentName: string;
   course: string;
 }): Promise<string> => {
-  const model = new ChatGoogleGenerativeAI({
-    model: "gemini-2.5-flash",
-    temperature: 0.7,
-  });
 
   const feeMap: Record<string, { govt: string; mgmt: string; avg: string }> = {
     "CSE": { govt: "Rs.1,50,000/yr", mgmt: "Rs.2,50,000/yr", avg: "Rs.10.2 LPA" },
@@ -98,18 +94,17 @@ export const generateGeneralEmailContent = async ({
   const matchedKey = Object.keys(feeMap).find(k =>
     course.toLowerCase().includes(k.toLowerCase())
   );
-  const fees = matchedKey ? feeMap[matchedKey] : {
-    govt: "Rs.1,50,000/yr",
-    mgmt: "Rs.2,00,000/yr",
-    avg: "Rs.8.0 LPA"
-  };
+
+  const govt = matchedKey ? feeMap[matchedKey]!.govt : "Rs.1,50,000/yr";
+  const mgmt = matchedKey ? feeMap[matchedKey]!.mgmt : "Rs.2,00,000/yr";
+  const avg = matchedKey ? feeMap[matchedKey]!.avg : "Rs.8.0 LPA";
 
   return `
 <h3>📚 About Your Program</h3>
 <p>
   The <strong>${course}</strong> program at Mysore College offers excellent career opportunities
-  with an average placement package of <strong>${fees.avg}</strong>.
-  Government quota tuition fee is <strong>${fees.govt}</strong> and management quota is <strong>${fees.mgmt}</strong>.
+  with an average placement package of <strong>${avg}</strong>.
+  Government quota tuition fee is <strong>${govt}</strong> and management quota is <strong>${mgmt}</strong>.
   Hostel accommodation is available at <strong>Rs.80,000/yr</strong>.
 </p>
 
