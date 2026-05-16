@@ -1,4 +1,6 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendFollowUpEmail = async ({
   to,
@@ -11,21 +13,6 @@ export const sendFollowUpEmail = async ({
   emailContent: string;
   course: string;
 }): Promise<void> => {
-
-  // Create transporter INSIDE the function so dotenv is already loaded
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-
-  console.log("EMAIL_USER:", process.env.EMAIL_USER);
-  console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
-  console.log("EMAIL_PASS length:", process.env.EMAIL_PASS?.length);
 
   const htmlBody = `
     <!DOCTYPE html>
@@ -43,10 +30,6 @@ export const sendFollowUpEmail = async ({
         .greeting p { color: #555; font-size: 14px; line-height: 1.6; margin: 0; }
         .course-badge { margin: 20px 40px; background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #1a4731; border-radius: 8px; padding: 14px 18px; font-size: 14px; color: #1a4731; font-weight: 600; }
         .content { padding: 10px 40px 30px; color: #444; font-size: 14px; line-height: 1.8; white-space: pre-line; }
-        .divider { height: 1px; background: #e5e7eb; margin: 0 40px; }
-        .cta { text-align: center; padding: 30px 40px; }
-        .cta a { background-color: #1a4731; color: #ffffff; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-block; }
-        .cta p { color: #888; font-size: 13px; margin-top: 12px; }
         .footer { background: #f3f4f6; padding: 20px 40px; text-align: center; font-size: 12px; color: #9ca3af; }
         .footer strong { color: #1a4731; }
       </style>
@@ -59,31 +42,29 @@ export const sendFollowUpEmail = async ({
         </div>
         <div class="greeting">
           <h2>Dear ${studentName},</h2>
-          <p>Thank you for speaking with our AI counselor, Ava. We truly appreciate your interest in Mysore College. Here is a personalized summary based on your conversation.</p>
+          <p>Thank you for speaking with our AI counselor. Here is your personalized summary.</p>
         </div>
         <div class="course-badge">📚 Program of Interest: ${course}</div>
-        <div class="divider"></div>
         <div class="content">${emailContent}</div>
-        <div class="divider"></div>
-        <div class="cta">
-          <a href="mailto:admissions@mysorecollege.edu.in">Contact Admissions Office</a>
-          <p>Or call us at <strong>+91-9876543210</strong> (Mon–Sat, 9AM–5PM)</p>
-        </div>
         <div class="footer">
           <p>© 2024 <strong>Mysore College</strong>, Karnataka. All rights reserved.</p>
-          <p>This email was sent because you requested a counseling call on our website.</p>
         </div>
       </div>
     </body>
     </html>
   `;
 
-  await transporter.sendMail({
-    from: `"Mysore College Admissions" <${process.env.EMAIL_USER}>`,
+  const { error } = await resend.emails.send({
+    from: "Mysore College <onboarding@resend.dev>",
     to,
     subject: `Your Personalized Guide to ${course} at Mysore College`,
     html: htmlBody,
   });
+
+  if (error) {
+    console.error("❌ Resend error:", error);
+    throw new Error(error.message);
+  }
 
   console.log(`✅ Follow-up email sent to ${to}`);
 };
