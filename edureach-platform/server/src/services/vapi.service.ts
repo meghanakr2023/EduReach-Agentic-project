@@ -40,23 +40,10 @@ export const initiateOutboundCall = async (payload: CallPayload): Promise<VapiCa
   // Build a smart first message using all collected data
   let firstMessage = `Hi ${userName}! This is Ava, your AI admissions counselor from Mysore College. `;
 
-  if (kcetRank && twelfthPercent) {
-    firstMessage += `I can see you have a KCET rank of ${kcetRank} and scored ${twelfthPercent}% in your 12th grade. `;
-    firstMessage += `Based on your rank, I already have a branch recommendation ready for you! `;
-    firstMessage += `You're interested in ${preferredCourse || "our programs"} and want to know about ${preferredTopic || "admissions"}. `;
-    firstMessage += `Shall I share your personalized recommendation?`;
-  } else if (kcetRank) {
-    firstMessage += `I can see your KCET rank is ${kcetRank}. `;
-    firstMessage += `I have a branch recommendation ready for you for ${preferredCourse || "engineering programs"}! `;
-    firstMessage += `Could you also tell me your 12th grade percentage so I can give you the complete picture?`;
-  } else if (twelfthPercent) {
-    firstMessage += `I can see you scored ${twelfthPercent}% in your 12th grade — great score! `;
-    firstMessage += `You're interested in ${preferredCourse || "our programs"}. `;
-    firstMessage += `Could you also share your KCET rank so I can recommend the best branch for you?`;
-  } else {
-    firstMessage += `You're interested in ${preferredCourse || "our programs"} and want to know about ${preferredTopic || "admissions"}. `;
-    firstMessage += `To help you find the best branch, could you share your KCET rank and 12th grade percentage?`;
-  }
+  // Replace the entire firstMessage logic with just this:
+let firstMessage = `Hi ${userName}! This is Ava, your AI admissions counselor from Mysore College. `;
+firstMessage += `You're interested in ${preferredCourse || "our programs"} and want to know about ${preferredTopic || "admissions"}. `;
+firstMessage += `How can I help you today?`;
 
   // Build variable values to pass all context to the assistant
   const variableValues: Record<string, string> = {
