@@ -59,10 +59,9 @@ export const handleVapiWebhook = async (
     } else {
       // Fallback to general email based on course
       emailContent = await generateGeneralEmailContent({
-        studentName: callRecord.userName,
-        course: callRecord.preferredCourse,
-      });
-    }
+  studentName: callRecord.userName,
+  course: callRecord.preferredCourse,
+});
 
     // Send the personalized follow-up email
     await sendFollowUpEmail({
