@@ -12,7 +12,6 @@ export const handleVapiWebhook = async (
 ): Promise<void> => {
   try {
     const payload = req.body;
-
     console.log("📞 Vapi Webhook received:", payload?.message?.type);
 
     // Vapi sends different event types — we only care about end-of-call report
@@ -59,9 +58,10 @@ export const handleVapiWebhook = async (
     } else {
       // Fallback to general email based on course
       emailContent = await generateGeneralEmailContent({
-  studentName: callRecord.userName,
-  course: callRecord.preferredCourse,
-});
+        studentName: callRecord.userName,
+        course: callRecord.preferredCourse,
+      });
+    }
 
     // Send the personalized follow-up email
     await sendFollowUpEmail({
@@ -78,6 +78,7 @@ export const handleVapiWebhook = async (
     console.log(`📧 Follow-up email sent to: ${callRecord.userEmail}`);
 
     res.status(200).json({ received: true, emailSent: true });
+
   } catch (error) {
     console.error("❌ Webhook error:", error);
     // Always return 200 to Vapi so it doesn't retry
