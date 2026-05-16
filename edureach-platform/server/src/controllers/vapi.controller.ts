@@ -15,8 +15,7 @@ export const startCall = async (
       preferredCourse,
       preferredTopic,
       kcetRank,
-      twelfthPercent,
-      studentEmail,
+      
     } = req.body;
 
     if (!phoneNumber || phoneNumber.trim().length < 10) {
@@ -36,15 +35,13 @@ export const startCall = async (
     const emailToUse = studentEmail || user.email;
 
     // Initiate the Vapi call with all collected data
-    const result = await initiateOutboundCall({
-      phoneNumber: phoneNumber.trim(),
-      userName: user.name,
-      userEmail: emailToUse,
-      preferredCourse: preferredCourse || "Not specified",
-      preferredTopic: preferredTopic || "General inquiry",
-      kcetRank: kcetRank || null,
-      twelfthPercent: twelfthPercent || null,
-    });
+   const result = await initiateOutboundCall({
+  phoneNumber: phoneNumber.trim(),
+  userName: user.name,
+  userEmail: emailToUse,
+  preferredCourse: preferredCourse || "Not specified",
+  preferredTopic: preferredTopic || "General inquiry",
+});
 
     // Save call record to MongoDB
     await Call.create({
