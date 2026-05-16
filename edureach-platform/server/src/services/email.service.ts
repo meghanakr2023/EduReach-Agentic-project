@@ -15,8 +15,8 @@ export const sendFollowUpEmail = async ({
   // Create transporter INSIDE the function so dotenv is already loaded
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
+    port: 465,
+    secure: true,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
