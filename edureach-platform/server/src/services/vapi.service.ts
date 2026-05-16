@@ -51,8 +51,7 @@ firstMessage += `How can I help you today?`;
     studentEmail: userEmail,
     preferredCourse: preferredCourse || "Not specified",
     preferredTopic: preferredTopic || "General inquiry",
-    kcetRank: kcetRank || "Not provided",
-    twelfthPercent: twelfthPercent ? `${twelfthPercent}%` : "Not provided",
+   
   };
 
   const response = await fetch("https://api.vapi.ai/call", {
